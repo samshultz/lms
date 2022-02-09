@@ -8,6 +8,7 @@ package-lock.json
 
 # dependencies
 /backend/node_modules
+/lms-backend/node_modules
 /frontend/node_modules
 /.pnp
 .pnp.js
