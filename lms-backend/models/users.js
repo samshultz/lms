@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
-
-let SALT_WORK_FACTOR = 10;
+import config from '../config.js'
+let SALT_WORK_FACTOR = parseInt(config.bcrypt_salt);
 
 const Schema = mongoose.Schema;
 
@@ -26,7 +26,7 @@ const userSchema = new Schema({
     enum: ['male', 'female'],
     required : true 
   },
-  email: { type: 'String', required: false, unique: true, index: true },
+  email: { type: 'String', required: false },
   phone: { type: 'String', required: false },
   address: { type: 'String', required: false },
   img: {
@@ -56,6 +56,8 @@ const userSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'School'
   },
+  token: { type: String },
+  refreshToken: { type: String },
   dateAdded: { type: 'Date', default: Date.now, required: true },
 });
 
@@ -69,7 +71,7 @@ userSchema.pre('save', function(next) {
     // generate a salt
     bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
         if (err) return next(err);
-
+      
         // hash the password using our new salt
         bcrypt.hash(user.password, salt, function(err, hash) {
             if (err) return next(err);

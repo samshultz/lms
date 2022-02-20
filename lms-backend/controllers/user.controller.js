@@ -16,6 +16,8 @@ export function getUsers(req, res){
     })
 }
 
+
+
 /**
  * Save a User
  * @param req
@@ -57,13 +59,16 @@ export function addUser(req, res){
  * @param res
  * @returns void
 */
-export function getUser(req, res){
-    User.findOne({ _id: req.params.id }).exec((err, user) => {
-        if (err) {
-            res.status(500).send(err);
-        }
-        res.json({ post })
-    })
+export async function getUser(req, res){
+    // User.findOne({ _id: req.params.id }).exec((err, user) => {
+    //     if (err) {
+    //         res.status(500).send(err);
+    //     }
+    //     res.json({ post })
+    // })
+    let user = await User.findById(req.user.user_id)
+    return res.status(200).json(user)
+    
 }
 
 /**
