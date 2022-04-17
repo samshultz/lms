@@ -22,7 +22,6 @@ const verifyToken = (req, res, next) => {
     } catch (err) {
       return catchError(err, res)
     }
-    console.log("I am trye================")
     return next();
   };
 

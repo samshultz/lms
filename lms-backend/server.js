@@ -85,15 +85,6 @@ mongoose.connection.once('open', () => {
     }
           
   })
-  let users = School.aggregate([
-    {$match: {'username': "samshultz"}},
-    {$lookup: {
-      "from": "User",
-      "localField": "_id",
-      foreignField: "_id",
-      "as": "school"
-    }}
-  ])
 
   async function assignPermToRoles(){
     const superAdminRole = await Role.findOne({ name: ROLE_SUPER_ADMIN });

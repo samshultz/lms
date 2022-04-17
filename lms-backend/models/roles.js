@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
+// TODO: add a foreignkey to School model, so that each role belong
+// to a school
 
 const roleSchema = new Schema({
     name: {
