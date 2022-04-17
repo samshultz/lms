@@ -20,7 +20,7 @@ import { register } from "../../features/services/user.service"
 const Register = () => {
     const { user, loading } = useSelector((state) => state.user)
     const dispatch = useDispatch()
-
+ 
     const initialValues = {
         schoolName: "",
         username: "",

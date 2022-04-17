@@ -29,6 +29,7 @@
     "nodemon": "^2.0.15",
     "path": "^0.12.7",
     "pusher": "^5.0.1",
+    "react-phone-number-input": "^3.1.46",
     "sanitize-html": "^2.7.0"
   },
   "author": "Samuel Taiwo",

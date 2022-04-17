@@ -6,16 +6,17 @@ export async function refreshToken(requestToken, req, res){
     try {
         let refreshToken = await RefreshToken.findOne({ token: requestToken });
         if(!refreshToken){
-            res.status(403).json({ message: "Invalid refresh token" });
-            return
+            req.isAuthenticated = false
+            // res.status(403).json({ message: "Invalid refresh token" });
+            return req.isAuthenticated
         }
-        
         if (RefreshToken.verifyExpiration(refreshToken)) {
+            req.isAuthenticated = false
             RefreshToken.findByIdAndRemove(refreshToken._id, {useFindAndModify: false}).exec();
-            res.status(403).json({
-                message: "Refresh Token has expired. Please Signin"
-            });
-            return
+            // res.status(403).json({
+            //     message: "Refresh Token has expired. Please Signin"
+            // });
+            return req.isAuthenticated
         }
         let user = await User.findById(refreshToken.userId)
         let accessToken = null;
@@ -28,11 +29,13 @@ export async function refreshToken(requestToken, req, res){
         user.token = accessToken
         user.refreshToken = refreshToken
         // user.save()
-       
-        return res
-            .cookie("refreshToken", user.refreshToken, {httpOnly: true})
-            .status(200)
-            .json(user)
+        req.isAuthenticated = true
+
+        return req.isAuthenticated
+        // res
+        //     .cookie("refreshToken", user.refreshToken, {httpOnly: true})
+        //     .status(200)
+        //     .json(user)
     } catch(err) {
         return res.status(500).send({ message: err })
     }

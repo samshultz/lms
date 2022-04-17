@@ -3,8 +3,9 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema
 
 const studentSchema = new Schema({
-    date_of_birth: { type: Date, required: true },
-    blood_group: {
+    dateOfBirth: { type: Date, required: true },
+    bio: {type: "String", required: false},
+    bloodGroup: {
         type: 'String',
         enum: ['A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-'],
         required: false
@@ -14,25 +15,31 @@ const studentSchema = new Schema({
         enum: ['christianity', 'islam', 'hindu', 'buddism', 'others'],
         required: false
     },
+    classRole: { type: "String" },
     class: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Class'
+    },
+    school: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "School"
     },
     branch: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Branch'
     },
-    admission_id: {
+    admissionID: {
         type: 'String',
         required: false
     },
-    next_of_kin: {
-        name: { type: 'String' },
+    nextOfKin: {
+        firstName: { type: 'String' },
+        lastName: { type: 'String' },
         phone: { type: 'String' },
         relationship: { type: 'String' },
         address: { type: 'String' }
     },
-    marital_status: {
+    maritalStatus: {
         type: 'String',
         enum: ['single', 'married', 'separated', 'divorced', 'other'],
         required: false

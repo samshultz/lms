@@ -1,6 +1,7 @@
 import 'animate.css';
 import 'normalize.css'
 import './index.css';
+import './datatables.css'
 import "./style.css"
 import axios from "./axios"
 import { useEffect } from 'react';
@@ -8,7 +9,9 @@ import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Admin from './components/admin/Admin';
+import StudentList from './components/admin/StudentList';
 import AdminDashboard from './components/admin/AdminDashboard';
+import AddStudent from './components/admin/AddStudent';
 import { useDispatch, useSelector } from 'react-redux'
 import { getUser } from "./features/services/user.service"
 
@@ -21,12 +24,11 @@ const getCSRFToken = async () => {
 
 
 const ProtectedRoute = ({
-  user,
-  statusCode,
+  redirectToLogin,
   redirectPath = '/account/login',
   children,
 }) => {
-  if (!user.username && statusCode === 403) {
+  if (redirectToLogin) {
     return <Navigate to={redirectPath} replace />;
   }
 
@@ -35,7 +37,7 @@ const ProtectedRoute = ({
 
 function App() {
   const dispatch = useDispatch()
-  const { user, errMessage, status } = useSelector((state) => state.user)
+  const { user, redirectToLogin, errMessage, status } = useSelector((state) => state.user)
   useEffect(() => {
     getCSRFToken()
     dispatch(getUser())
@@ -47,9 +49,11 @@ function App() {
       <Routes>
         <Route path="/account/login" element={ <Login /> } />
         <Route path="/account/register" element={ <Register /> } />
-        <Route path="/admin/" element={ <ProtectedRoute user={user} statusCode={status}><Admin /></ProtectedRoute> }>
+        <Route path="/admin/" element={ <ProtectedRoute redirectToLogin={redirectToLogin}><Admin /></ProtectedRoute> }>
           <Route path="" element={ <AdminDashboard /> } />
           <Route path="dashboard" element={ <AdminDashboard /> } />
+          <Route path="students" element={ <StudentList /> } />
+          <Route path='students/add' element={ <AddStudent /> } />
         </Route>
       </Routes>
     </div>

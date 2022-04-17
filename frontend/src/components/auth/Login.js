@@ -29,7 +29,7 @@ const Login = () => {
     dispatch(login(values))
   }
 
-  if(loading) return (<div id="preloader"></div>)
+  // if(loading) return (<div id="preloader"></div>)
   if(user.isSuperuser) return (<Navigate to="/admin/dashboard" />)
   return (
       <>

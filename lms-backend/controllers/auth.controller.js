@@ -7,11 +7,10 @@ import User from '../models/users.js';
 import Token from "../models/token.js"
 import RefreshToken from '../models/refreshToken.js';
 import School from "../models/school.js"
-
-
+import Role from "../models/roles.js"
+import * as constants from "../utils/constants.js"
 
 import config from '../config.js';
-
 /**
  * register users
  * @param req
@@ -41,7 +40,7 @@ export async function register(req, res){
             name: sanitizeHtml(schoolName)
         })
 
-       
+        const superAdminRole = await Role.findOne({ name: constants.ROLE_SUPER_ADMIN });
 
         const newUser = new User(req.body);
         // Let's sanitize inputs
@@ -53,7 +52,8 @@ export async function register(req, res){
         newUser.isSuperuser = true;
         
         newUser.school = school;
-         
+        newUser.addRoles([superAdminRole])
+
         // Create access token
          Token.createToken(newUser, username).then((token) => {
             newUser.token = token
@@ -119,6 +119,24 @@ export async function login(req, res){
         console.log(error);
     }
 }
+/**
+ * Logout user
+ * @param req, res
+ * @return res
+ */
+
+export async function logout(req, res) {
+    let requestToken = req.cookies.refreshToken || req.body.refreshToken || req.query.refreshToken
+    console.log("I am here right now")
+    let refreshToken = RefreshToken.findOne({token: requestToken})
+    console.log("Already got the refresh token. Printing it now...")
+    console.log(refreshToken.token)
+    Token.findOneAndDelete({ userId: req.user.user_id })
+    RefreshToken.findByIdAndRemove(refreshToken._id, {useFindAndModify: false}).exec();
+    console.log("Abbout to send a response")
+    return res.clearCookie('refreshToken').status(200).send({message: "Logged out"})
+}
+
 
 /**
  * refresh access token
@@ -127,34 +145,33 @@ export async function login(req, res){
  */
 
 export async function refreshToken(req, res){
-    
-    const { refreshToken: requestToken } = req.cookies || req.body;
+    const requestToken = req.body.refreshToken || req.cookies.refreshToken;
     if(!requestToken){
-        return res.status(403).json({message: "Refresh Token is required"});
+        return res.status(400).json({message: "Refresh Token is required"});
     }
 
     try {
         let refreshToken = await RefreshToken.findOne({ token: requestToken });
         if(!refreshToken){
-            res.status(403).json({ message: "Invalid refresh token" });
+            res.status(400).json({ message: "Invalid refresh token" });
             return
-        }
+        } 
         if (RefreshToken.verifyExpiration(refreshToken)) {
             RefreshToken.findByIdAndRemove(refreshToken._id, {useFindAndModify: false}).exec();
-
-            res.status(403).json({
+            res.status(400).json({
                 message: "Refresh Token has expired. Please Signin"
             });
             return
         }
-        
         let user = await User.findById(refreshToken.userId)
         let accessToken = null;
         await Token.createToken(user, user.username).then((tk) => {
             accessToken = tk
+            user.token = tk
         })
+        user.refreshToken = refreshToken.token
         return res
-            .cookie("refreshToken", user.refreshToken, {httpOnly: true})
+            .cookie("refreshToken", refreshToken.token, {httpOnly: true})
             .status(200)
             .json({
             accessToken: accessToken,

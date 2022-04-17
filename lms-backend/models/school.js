@@ -10,6 +10,18 @@ const schoolSchema = new Schema({
         data: Buffer,
         contentType: String
     },
+    classes: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Class'
+        }
+    ],
+    'classArms': [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'classArms'
+        }
+    ],
     branches: [
         {
             type: mongoose.Schema.Types.ObjectId,

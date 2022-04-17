@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useDispatch } from 'react-redux';
 import { getAccessToken, setAccessToken } from "./features/user"
-
+import store from "./store"
 
 const instance = axios.create({
     baseURL: "http://localhost:4001/api",
@@ -15,7 +15,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     
-    const { accessToken } = getAccessToken()
+    const {accessToken} = store.getState().user
     if (accessToken) {
       config.headers["x-access-token"] = accessToken;
     }
@@ -32,16 +32,16 @@ instance.interceptors.response.use(
   },
   async (err) => {
     const originalConfig = err.config;
+    console.log(originalConfig)
     if(originalConfig.url !== "/auth/login" && err.response){
       // Access Token was expired
       if(err.response.status === 401 && !originalConfig._retry) {
         originalConfig._retry = true;
         try {
-          const rs = await instance.post("/auth/refreshtoken", {refreshToken: ""});
-          let dispatch = useDispatch()
-          const { accessToken } = rs.accessToken;
-          dispatch(setAccessToken(accessToken))
-          
+          await instance.post("/auth/refreshToken", {refreshToken: ""}).then((tok) => {
+            store.dispatch(setAccessToken(tok))
+          })
+            
           return instance(originalConfig);
         } catch (_error) {
           return Promise.reject(_error)

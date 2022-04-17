@@ -12,6 +12,14 @@ const parentSchema = new Schema({
         type: 'String',
         required: false
     },
+    school: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "School"
+    },
+    branch: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Branch"
+    },
     detail: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"

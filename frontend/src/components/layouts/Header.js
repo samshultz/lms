@@ -11,6 +11,7 @@ import {
     DropdownToggle,
     DropdownMenu
 } from 'reactstrap';
+import { logout } from "../../features/user"
 import { toggleMobileNav, toggleSidebar } from "../../features/layout";
 
 const Header = () => {
@@ -24,7 +25,6 @@ const Header = () => {
     const [navbarOpen, navbarToggle] = useState(false)
     
 
-    console.log(mobileNavOpened)
   return (
     <Navbar expand="md" light={true} className="header-menu-one">
             <div className="nav-bar-header-one">
@@ -82,11 +82,11 @@ const Header = () => {
                             </div>
                             <div className="item-content">
                                 <ul className="settings-list">
-                                    <li><a href="#"><i className="flaticon-user"></i>My Profile</a></li>
-                                    <li><a href="#"><i className="flaticon-list"></i>Task</a></li>
-                                    <li><a href="#"><i className="flaticon-chat-comment-oval-speech-bubble-with-text-lines"></i>Message</a></li>
-                                    <li><a href="#"><i className="flaticon-gear-loading"></i>Account Settings</a></li>
-                                    <li><a href="login.html"><i className="flaticon-turn-off"></i>Log Out</a></li>
+                                    <li><a><i className="flaticon-user"></i>My Profile</a></li>
+                                    <li><a><i className="flaticon-list"></i>Task</a></li>
+                                    <li><a><i className="flaticon-chat-comment-oval-speech-bubble-with-text-lines"></i>Message</a></li>
+                                    <li><a><i className="flaticon-gear-loading"></i>Account Settings</a></li>
+                                    <li><a onClick={() => dispatch(logout())}><i className="flaticon-turn-off"></i>Log Out</a></li>
                                 </ul>
                             </div>
                         </DropdownMenu>

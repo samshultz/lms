@@ -60,12 +60,6 @@ export function addUser(req, res){
  * @returns void
 */
 export async function getUser(req, res){
-    // User.findOne({ _id: req.params.id }).exec((err, user) => {
-    //     if (err) {
-    //         res.status(500).send(err);
-    //     }
-    //     res.json({ post })
-    // })
     let user = await User.findById(req.user.user_id)
     return res.status(200).json(user)
     

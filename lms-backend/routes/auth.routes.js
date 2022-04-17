@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import auth from "../middleware/auth.js"
 import * as AuthController from '../controllers/auth.controller.js';
 const router = new Router();
 
@@ -8,6 +9,8 @@ router.route('/register').post(AuthController.register);
 // Login Users
 router.route('/login').post(AuthController.login);
 
+// Logout Users
+router.route("/logout").post(auth, AuthController.logout)
 // Refresh Token
 router.route('/refreshToken').post(AuthController.refreshToken);
 
