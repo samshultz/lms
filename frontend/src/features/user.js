@@ -55,10 +55,8 @@ export const register = createAsyncThunk(
       async (h="", { rejectWithValue }) => {
           try {
               const res = await axios.post("/auth/logout").then((resp) => resp)
-              console.log(res)
               return res
           } catch (err) {
-              console.log(err)
             //   throw err
               if(err.response) return rejectWithValue(err.response.data)
               return rejectWithValue("Oops there seem to be an error")

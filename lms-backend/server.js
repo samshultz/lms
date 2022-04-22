@@ -20,7 +20,7 @@ import config from "./config.js"
 import School from './models/school.js';
 import Role from "./models/roles.js"
 import Permission from "./models/permission.js"
-
+import verifyToken from './middleware/auth.js';
 import {
   ROLE_ADMIN,
   ROLE_SUPER_ADMIN,
@@ -121,14 +121,16 @@ mongoose.connection.once('open', () => {
 })
 //api routes
 
-app.use(csrfProtection)
-app.get('/api/getCSRFToken', (req, res) => {
-  res.json({ CSRFToken: req.csrfToken() });
-});
+// app.use(csrfProtection)
+// app.get('/api/getCSRFToken', (req, res) => {
+//   res.json({ CSRFToken: req.csrfToken() });
+// });
 
 app.use('/api/', users)
 app.use("/api/auth", auth)
-app.use("/api/admin/student", studentMgt)
+
+app.use(verifyToken)
+app.use("/api/admin/students", studentMgt)
 
 //listen
 app.listen(port, () => console.log(`Listening on localhost: ${port}`))

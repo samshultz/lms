@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import config from '../config.js'
 let SALT_WORK_FACTOR = parseInt(config.bcrypt_salt);
 import Role from "./roles.js"
+import * as constants from "../utils/constants.js"
 
 const Schema = mongoose.Schema;
 
@@ -144,10 +145,18 @@ userSchema.methods.hasPermission = async function(permission) {
   if (!permission || permission === 'undefined') {
       return false;
   }
-
-  const permissions = await this.getPermissions();
+  let hasPerm;
+  await this.hasRole({name: constants.ROLE_SUPER_ADMIN})
+    .then(async (hasRl) => {
+      if(hasRl){
+        hasPerm = hasRl
+      } else {
+        const permissions = await this.getPermissions();
   
-  return permissions.includes(permission._id)
+        hasPerm = permissions.includes(permission._id)
+      }
+  })
+  return hasPerm
 }
 
 userSchema.methods.hasPermissionThroughRole = async function (permission) {
@@ -171,7 +180,19 @@ userSchema.methods.hasPermissionTo = async function (permission) {
   if (!permission || permission === 'undefined') {
     return false;
   }
-  console.log("I am jugging")
-  return await this.hasPermissionThroughRole(permission) || this.hasPermission(permission);
+  var h = await this.hasPermissionThroughRole(permission).then(async (hasPTR) => {
+    let hs;
+    if(hasPTR){
+      hs = true
+      return hs
+    } else {
+      await this.hasPermission(permission).then(hasperm => {
+        hs = hasperm 
+        return hs
+      })
+    }
+    return hs
+  })
+  return h
 };
-export default mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema); 

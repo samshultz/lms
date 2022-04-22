@@ -14,6 +14,7 @@ import * as constants from "../utils/constants.js";
 */
 
 export async function addStudent(req, res){
+    
     try {
         const { 
                 admissionID, 
@@ -52,21 +53,6 @@ export async function addStudent(req, res){
             return res.status(400).send("All inputs are required")
         }
 
-        // check if user already exists
-        // const oldUser = await User.findOne({ username });
-
-        // if(oldUser) {
-        //     return res.status(409).send("User already Exists. Please Login");
-        // }
-
-        // Encrypt user Password
-        // let encryptedPassword = await bcrypt.hash(password, config.bcrypt_salt);
-        
-        // Create school
-        // const school = await School.create({
-        //     name: sanitizeHtml(schoolName)
-        // })
-
        
         const newStudent = new Student(req.body);
         const oldClass = await Class.findOne({ 'name': studentClass })
@@ -78,6 +64,7 @@ export async function addStudent(req, res){
                 code_name: sanitizeHtml(section)
             })
         }
+        let currUser = await User.findById(req.user.user_id)
         const user = await User.create({
             username: sanitizeHtml("PIO" + Math.floor(1000 + Math.random() * 900000)),
             firstName: sanitizeHtml(firstName),
@@ -108,6 +95,7 @@ export async function addStudent(req, res){
         }
         newStudent.detail = user
         newStudent.class = studentClass
+        newStudent.school = currUser.school
         
         newStudent.save((err, saved) => {
             if (err){
@@ -119,6 +107,21 @@ export async function addStudent(req, res){
         })
     } catch (error) {
         console.log(error);
+    }
+    
+}
+
+
+export async function studentList(req, res) {
+    console.log("I am here now")
+    console.log(req.user)
+    try {
+        const user = await User.findOne({ _id: req.user.user_id, username: req.user.username });
+        console.log(user.school)
+        const students = await Student.find({school: user.school}).populate("detail").populate("class")
+        return res.status(200).json(students)
+    } catch (error) {
+        return res.status(400).json(error)
     }
     
 }

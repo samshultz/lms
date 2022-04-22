@@ -1,7 +1,7 @@
 import 'animate.css';
 import 'normalize.css'
 import './index.css';
-import './datatables.css'
+// import './datatables.css'
 import "./style.css"
 import axios from "./axios"
 import { useEffect } from 'react';

@@ -12,7 +12,7 @@ const studentSchema = new Schema({
     },
     religion: {
         type: 'String',
-        enum: ['christianity', 'islam', 'hindu', 'buddism', 'others'],
+        enum: ['christianity', 'islam', 'hindu', 'buddhism', 'others'],
         required: false
     },
     classRole: { type: "String" },

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import Permission from "../models/permission.js";
+import User from "../models/users.js"
 const { TokenExpiredError } = jwt;
 
 const catchError = (err, res) => {
@@ -9,16 +10,17 @@ const catchError = (err, res) => {
     return res.status(401).send({message: "You do not have authorization to access this"});
 }
 
-
 export default (permission) => async (req, res, next) => {
     const access = await Permission.findOne({name: permission});
-    console.log(req.user)
-    req.user.hasPermissionTo(access).then(hasAccess => {
+    const user = await User.findOne({_id: req.user.user_id, username: req.user.username})
+    
+    await user.hasPermissionTo(access).then(hasAccess => {
         if(hasAccess){
+            
             return next()
         } else {
             console.error('You do not have the authorization to access this.');
-            return catchError(err, res)
+            return res.status(401).send({message: "You do not have authorization to access this"});
         }
     })
 };

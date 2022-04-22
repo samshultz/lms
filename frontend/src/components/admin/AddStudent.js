@@ -21,7 +21,7 @@ import Footer from '../layouts/Footer'
 import Header from '../layouts/Header'
 
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
 
 import { addStudent } from "../../features/services/studentMgt.service"
@@ -133,6 +133,7 @@ const AddStudent = () => {
         dispatch(addStudent(values))
     }
    
+  if(status === 201) return(<Navigate to="/admin/students" />)
   return (
     <>
         <Helmet>
