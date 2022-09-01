@@ -27,9 +27,14 @@ const StudentList = () => {
     const { status, students } = useSelector((state)=> state.studentMgt)
     const [isMenuOpened, setMenuOpenStatus] = useState(false)
     const [isActionOpened, setIsActionStatus] = useState(false)
-
+    const [actionID, setActionID] = useState("")
+    
     const setStatus = (values) => {
-        console.log(values)
+        setActionID(values.detail._id)
+    }
+    
+    const closeActionMenu = () => {
+        setActionID("")
     }
     useEffect(() => {
         dispatch(studentList())
@@ -103,7 +108,7 @@ const StudentList = () => {
             cell: (record) => {
               return (
                 <>
-                  <Dropdown tag="div">
+                  <Dropdown tag="div" isOpen={actionID === record.detail._id ? true : false}>
                     <DropdownToggle 
                         tag="a" 
                         ariaExpanded="false" 
@@ -113,7 +118,7 @@ const StudentList = () => {
                         <span className="flaticon-more-button-of-three-dots"></span>
                     </DropdownToggle>
                     <DropdownMenu right={true}>
-                        <DropdownItem>
+                        <DropdownItem onClick={() => closeActionMenu()}>
                             <i className="fas fa-times text-orange-red"></i>
                             Close
                         </DropdownItem>
@@ -238,42 +243,13 @@ const StudentList = () => {
                         responsive
                         striped
                         selectableRows
+                        pagination
                         // selectableRowsComponent={selectableRowsComp}
                         />
-                    <table className="table display data-table text-nowrap">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <div className="form-check">
-                                        <Input type="checkbox" className="form-check-input checkAll" />
-                                        <label className="form-check-label">Roll</label>
-                                    </div>
-                                </th>
-                                <th>Photo</th>
-                                <th>Name</th>
-                                <th>Gender</th>
-                                <th>Class</th>
-                                <th>Section</th>
-                                <th>Parents</th>
-                                <th>Address</th>
-                                <th>Date Of Birth</th>
-                                <th>Phone</th>
-                                <th>E-mail</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <StudentRow />
-                            <StudentRow />
-                            
-                           
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
-            
-                    <Footer />
+        <Footer />
                 </div>
             </div>
         </div>
