@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import config from '../config.js'
 let SALT_WORK_FACTOR = parseInt(config.bcrypt_salt);
 import Role from "./roles.js"

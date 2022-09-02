@@ -28,9 +28,25 @@ const StudentList = () => {
     const [isMenuOpened, setMenuOpenStatus] = useState(false)
     const [isActionOpened, setIsActionStatus] = useState(false)
     const [actionID, setActionID] = useState("")
+    const [rollToSearch, setRollToSearch] = useState("p")
+    const [nameToSearch, setNameToSearch] = useState("")
+    const [classToSearch, setClassToSearch] = useState("")
     
     const setStatus = (values) => {
         setActionID(values.detail._id)
+    }
+    
+    const searchByRoll = (e) => {
+        setRollToSearch(e.target.value)
+        
+    }
+    
+    const searchByName = (e) => {
+        setNameToSearch(e.target.value)
+    }
+    
+    const searchByClass = (e) => {
+        setClassToSearch(e.target.value)
     }
     
     const closeActionMenu = () => {
@@ -137,7 +153,39 @@ const StudentList = () => {
              },
             },
     ]
-    const data = students.data
+    
+    const persons = students.data
+    const dataFilter = (persons) => {
+        let data;
+        
+        if ((!rollToSearch && !classToSearch) && nameToSearch) {
+            data = persons.filter(student=> nameToSearch in student.detail.firstName);
+        } else if((classToSearch && nameToSearch) && !rollToSearch) {
+            data = persons.filter(student=> nameToSearch in student.detail.firstName)
+            .filter(student => classToSearch in student.class.name);
+        } else if ((!rollToSearch && !nameToSearch) && classToSearch) {
+            data = persons.filter(student=> classToSearch in student.class.name);
+        } else if ((!classToSearch && !nameToSearch) && rollToSearch) {
+            console.log("I am here")
+            
+            data = persons.filter(student=> rollToSearch in student.admissionID);
+            console.log(data)
+        } else if ((rollToSearch && nameToSearch) && !classToSearch) {
+            data = persons.filter(student=> nameToSearch in student.detail.firstName)
+            .filter(student => rollToSearch in student.admissionID);
+        } else if ((rollToSearch && classToSearch) && !nameToSearch) {
+            data = persons.filter(student=> rollToSearch in student.admissionID)
+            .filter(student => classToSearch in student.class.name);
+        } else if (rollToSearch && classToSearch && nameToSearch) {
+            data = persons.filter(student=> nameToSearch in student.detail.firstName)
+            .filter(student => classToSearch in student.class.name)
+            .filter(student => rollToSearch in student.admissionID);
+        } else if (!nameToSearch && !classToSearch && !rollToSearch) {
+            data = persons
+        }
+        return data
+    }
+    const data = dataFilter(persons)
 
     const selectableRowsComp = React.forwardRef(({ onClick, ...rest }, ref) => (
             <div className="form-check">
@@ -221,13 +269,13 @@ const StudentList = () => {
                 <form className="mg-b-20">
                     <div className="row gutters-8">
                         <div className="col-3-xxxl col-xl-3 col-lg-3 col-12 form-group">
-                            <Input type="text" placeholder="Search by Roll ..." className="form-control" />
+                            <Input type="text" placeholder="Search by Roll ..." className="form-control" onChange={searchByRoll} />
                         </div>
                         <div className="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
-                            <Input type="text" placeholder="Search by Name ..." className="form-control" />
+                            <Input type="text" placeholder="Search by Name ..." className="form-control" onChange={searchByName}/>
                         </div>
                         <div className="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
-                            <Input type="text" placeholder="Search by Class ..." className="form-control" />
+                            <Input type="text" placeholder="Search by Class ..." className="form-control" onChange={searchByClass}/>
                         </div>
                         <div className="col-1-xxxl col-xl-2 col-lg-3 col-12 form-group">
                             <button type="submit" className="fw-btn-fill btn-gradient-yellow">SEARCH</button>
