@@ -28,7 +28,7 @@ const StudentList = () => {
     const [isMenuOpened, setMenuOpenStatus] = useState(false)
     const [isActionOpened, setIsActionStatus] = useState(false)
     const [actionID, setActionID] = useState("")
-    const [rollToSearch, setRollToSearch] = useState("p")
+    const [rollToSearch, setRollToSearch] = useState("")
     const [nameToSearch, setNameToSearch] = useState("")
     const [classToSearch, setClassToSearch] = useState("")
     
@@ -159,27 +159,53 @@ const StudentList = () => {
         let data;
         
         if ((!rollToSearch && !classToSearch) && nameToSearch) {
-            data = persons.filter(student=> nameToSearch in student.detail.firstName);
+            data = persons.filter(student =>  
+                    student.detail.firstName.toLowerCase()
+                    .includes(nameToSearch.toLowerCase()) || 
+                    student.detail.lastName.toLowerCase()
+                    .includes(nameToSearch.toLowerCase())
+                    );
         } else if((classToSearch && nameToSearch) && !rollToSearch) {
-            data = persons.filter(student=> nameToSearch in student.detail.firstName)
-            .filter(student => classToSearch in student.class.name);
+            data = persons.filter(student =>  
+                    (student.detail.firstName.toLowerCase().includes(nameToSearch.toLowerCase()) || 
+                    student.detail.lastName.toLowerCase().includes(nameToSearch.toLowerCase())) && 
+                    student.class.name.toLowerCase().includes(classToSearch.toLowerCase()))
         } else if ((!rollToSearch && !nameToSearch) && classToSearch) {
-            data = persons.filter(student=> classToSearch in student.class.name);
+            data = persons.filter(student => 
+                     student.class.name.toLowerCase()
+                     .includes(classToSearch.toLowerCase()));
         } else if ((!classToSearch && !nameToSearch) && rollToSearch) {
-            console.log("I am here")
-            
-            data = persons.filter(student=> rollToSearch in student.admissionID);
-            console.log(data)
+            data = persons.filter(student => 
+                    student.admissionID.toLowerCase()
+                    .includes(rollToSearch.toLowerCase()));
+                    
         } else if ((rollToSearch && nameToSearch) && !classToSearch) {
-            data = persons.filter(student=> nameToSearch in student.detail.firstName)
-            .filter(student => rollToSearch in student.admissionID);
+            data = persons.filter(student => 
+                (
+                    student.detail.firstName.toLowerCase()
+                        .includes(nameToSearch.toLowerCase()) || 
+                    student.detail.lastName.toLowerCase()
+                        .includes(nameToSearch.toLowerCase())
+                ) && 
+                student.admissionID.toLowerCase().includes(rollToSearch.toLowerCase())
+            );
         } else if ((rollToSearch && classToSearch) && !nameToSearch) {
-            data = persons.filter(student=> rollToSearch in student.admissionID)
-            .filter(student => classToSearch in student.class.name);
+            data = persons.filter(student => 
+                student.admissionID.toLowerCase()
+                    .includes(rollToSearch.toLowerCase()) && 
+                student.class.name.toLowerCase().includes(classToSearch.toLowerCase())
+            );
         } else if (rollToSearch && classToSearch && nameToSearch) {
-            data = persons.filter(student=> nameToSearch in student.detail.firstName)
-            .filter(student => classToSearch in student.class.name)
-            .filter(student => rollToSearch in student.admissionID);
+            data = persons.filter(student => 
+                (
+                    student.detail.firstName.toLowerCase()
+                        .includes(nameToSearch.toLowerCase()) || 
+                    student.detail.lastName.toLowerCase()
+                        .includes(nameToSearch.toLowerCase())
+                ) && 
+                student.admissionID.toLowerCase().includes(rollToSearch.toLowerCase()) &&
+                student.class.name.toLowerCase().includes(classToSearch.toLowerCase())
+            );
         } else if (!nameToSearch && !classToSearch && !rollToSearch) {
             data = persons
         }
