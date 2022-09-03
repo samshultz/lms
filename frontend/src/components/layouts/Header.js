@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import logo from "../../img/logo.png"
 import { useSelector, useDispatch } from "react-redux"
 import {
     Input,
@@ -30,7 +31,7 @@ const Header = () => {
             <div className="nav-bar-header-one">
                 <div className="header-logo">
                     <a href="index.html">
-                        <img src="../../img/logo.png" alt="logo" />
+                        <img src={logo} alt="logo" />
                     </a>
                 </div>
                  <div className="toggle-button sidebar-toggle" onClick={() => dispatch(toggleSidebar(!sidebarOpened))}>

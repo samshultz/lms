@@ -17,7 +17,7 @@ import {
     DropdownItem,
     Label
 } from "reactstrap"
-
+import { Link } from 'react-router-dom'
 import { studentList } from "../../features/services/studentMgt.service"
 
 const StudentList = () => {
@@ -57,8 +57,16 @@ const StudentList = () => {
     }, [])
     const columns = [
         {
+              name: '#',
+              cell: (row, index) => index + 1,
+            },
+        {
             name: "Admission ID",
-            selector: row => row.admissionID,
+            cell: (row) => {
+                return (
+                    <Link to={`/admin/students/details/${row.admissionID}/${row.detail._id}`} state={{ student: row }}>{row.admissionID}</Link>
+                )
+            },
             sortable: true,
             reorder: true,
             grow: 3
