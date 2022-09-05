@@ -11,6 +11,7 @@ import Register from './components/auth/Register';
 import Admin from './components/admin/Admin';
 import StudentList from './components/admin/StudentList';
 import StudentDetails from './components/admin/StudentDetail'
+import StudentUpdate from './components/admin/StudentUpdate'
 import AdminDashboard from './components/admin/AdminDashboard';
 import AddStudent from './components/admin/AddStudent';
 import { useDispatch, useSelector } from 'react-redux'
@@ -55,6 +56,7 @@ function App() {
           <Route path="dashboard" element={ <AdminDashboard /> } />
           <Route path="students" element={ <StudentList /> } />
           <Route path="students/details/:studentID/:ID" element={ <StudentDetails />} />
+          <Route path="students/:studentID/:ID/update" element={ <StudentUpdate />} />
           <Route path='students/add' element={ <AddStudent /> } />
         </Route>
       </Routes>

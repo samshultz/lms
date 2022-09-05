@@ -8,8 +8,10 @@ const CreatableSelectField = (props) => {
     const onChange = ({ value }) => {
         setValue(value);
       };
-    
-      return <CreatableSelect {...props} onChange={onChange} onBlur={setTouched} className="form-control select2" />;
+    const { options } = props
+      return <CreatableSelect {...props} onChange={onChange} onBlur={setTouched} className="form-control select2" 
+        value={(options ? options.find(option => option.value === field.value) : '')}
+      />;
 }
 
 export default CreatableSelectField
